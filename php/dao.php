@@ -33,8 +33,6 @@
 		public $error;
 
 		function __construct() {
-			echo "<p>Hola PDO</p>";
-
 			try {
 				$this->db = new PDO(DB_CONNECTION, DB_USERNAME, DB_PASSWORD);
 			} catch(PDOException $e) {
@@ -55,29 +53,30 @@
 		}
 
 		function checkUser($username, $password) {
+			
+			$result = false;
+			
 			$sql = "SELECT * FROM ".TABLE_USUARIOS." WHERE username = ".$username." AND password = ".sha1($password);
 
-			if (isConnected()) {
-				$statement = $this->db->query($sql);
-				$result = $statement->fetch(PDO::FETCH_ASSOC);
-				print_r($result);
+			if ($this->isConnected()) {
+				$res = $this->db->query($sql, PDO::FETCH_ASSOC);
+				
+				if (count($res) == 1) {
+					echo $res[0]['username'];
+					//$result = true;
+				}
 			}
+			
+			//return $result;
 		}
 
 		function getUsuarios() {
 			
 
 			if ($this->db == null) {
-				echo "<p>No hay conexión a la base de datos</p>"
+				echo "<p>No hay conexión a la base de datos</p>";
 			} else {
 				$statement = $this->db->query('SELECT * FROM'.TABLE_USUARIOS);
-				$aResult = $statement->fetch(PDO::FETCH_ASSOC);
-
-				if (count($aResult) > 0) {
-					echo "<p>Existen usuarios</p>";
-				} else {
-					echo "<p>No existen usuarios</p>";
-				}
 			}
 		}
 	}

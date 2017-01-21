@@ -9,7 +9,6 @@
 		protected $dao;
 
 		function __construct() {
-			echo "Hola";
 			$this->dao = new Dao();
 		}
 
@@ -19,7 +18,7 @@
 
 		function loginIsSet() {
 
-			boolean $result = false;;
+			$result = false;
 			if (isset($_SESSION['username']) && isset($_SESSION['password'])) {
 				$result = true;
 			}
@@ -28,8 +27,12 @@
 		}
 
 		function login($username, $password) {
+			
+			$this->dao->checkUser($username, $password);
 
-			$dao->checkUser($username, $password);
+			/*if($this->dao->checkUser($username, $password)) {
+				echo "<script>window.location='../html/main.html';</script>";
+			}*/
 		}
 	}
 ?>
