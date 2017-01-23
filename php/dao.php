@@ -37,7 +37,7 @@
 				$this->db = new PDO(DB_CONNECTION, DB_USERNAME, DB_PASSWORD);
 			} catch(PDOException $e) {
 				$this->error = $e->getMessage();
-				$this->connect = false;
+				$this->db = null;
 			}
 			
 		}
@@ -56,28 +56,137 @@
 			
 			$result = false;
 			
-			$sql = "SELECT * FROM ".TABLE_USUARIOS." WHERE username = ".$username." AND password = ".sha1($password);
-
 			if ($this->isConnected()) {
-				$res = $this->db->query($sql, PDO::FETCH_ASSOC);
+				$sql = "SELECT * FROM ".TABLE_USUARIOS." WHERE username = ? AND password = ?";
+				$sth = $this->db->prepare($sql);
+				$sth->execute(array($username, $password));
+				$output = $sth->fetchAll();
 				
-				if (count($res) == 1) {
-					echo $res[0]['username'];
-					//$result = true;
+				if (count($output) == 1) {
+					$result = true;
 				}
 			}
 			
-			//return $result;
+			return $result;
 		}
 
-		function getUsuarios() {
+		function getIncidencias($filter) {
 			
-
-			if ($this->db == null) {
-				echo "<p>No hay conexión a la base de datos</p>";
-			} else {
-				$statement = $this->db->query('SELECT * FROM'.TABLE_USUARIOS);
+			$output;
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				if ($filter == "empty") {
+					$sql = "SELECT * FROM ".TABLE_INCIDENCIAS;
+					
+				} else {
+					$sql = "SELECT * FROM ".TABLE_INCIDENCIAS." WHERE student LIKE '".$filter."%'";
+				}
+				
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+				$output = $sth->fetchAll();
 			}
+			
+			return $output;
+		}
+		
+		function getCountTodayIncidencias($today) {
+			$output;
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				$sql = "SELECT count(".COL_ID_INCIDENCIAS.") FROM ".TABLE_INCIDENCIAS." WHERE ".COL_DATE_INCIDENCIAS." LIKE '".$today."%';";
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+				$output = $sth->fetchAll();
+			}
+			
+			return $output[0]['count(id)'];
+		}
+		
+		function getCountIncidencias() {
+			$output;
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				$sql = "SELECT count(".COL_ID_INCIDENCIAS.") FROM ".TABLE_INCIDENCIAS.";";
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+				$output = $sth->fetchAll();
+			}
+			
+			return $output[0]['count(id)'];
+		}
+		
+		function getUser($username) {
+			$output;
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				$sql = "SELECT * FROM ".TABLE_USUARIOS." WHERE ".COL_USERNAME_USUARIOS." = '".$username."';";
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+				$output = $sth->fetchAll();
+			}
+			return $output;
+		}
+		
+		function getUsers() {
+			$output;
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				$sql = "SELECT * FROM ".TABLE_USUARIOS.";";
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+				$output = $sth->fetchAll();
+			}
+			return $output;
+		}
+		
+		function insertIncidencia($description, $student, $tipoIncidencia, $username) {
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				$sql = "INSERT INTO ".TABLE_INCIDENCIAS." (".COL_DESCRIPTION_INCIDENCIAS.", ".COL_STUDENT_INCIDENCIAS.", ".COL_DATE_INCIDENCIAS.", ".COL_IDTYPE_INCIDENCIAS.", ".COL_IDCREATOR_INCIDENCIAS.") VALUES('".$description."', '".$student."', '".date("Y-m-d H:i:s")."', ".$tipoIncidencia.", ".$username.");";
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+			}
+		}
+		
+		function getTipoIncidencia($id) {
+			$output;
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				$sql = "SELECT * FROM ".TABLE_TIPOINCIDENCIAS." WHERE ".COL_ID_TIPOINCIDENCIAS." = ".$id.";";
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+				$output = $sth->fetchAll();
+			}
+			return $output;
+		}
+		
+		function getCreator($id) {
+			$output;
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				$sql = "SELECT * FROM ".TABLE_USUARIOS." WHERE ".COL_ID_USUARIOS." = ".$id.";";
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+				$output = $sth->fetchAll();
+			}
+			return $output;
 		}
 	}
 ?>
