@@ -31,46 +31,52 @@
 		
 		function getIncidencias($filter) {
 			$incidencias = $this->dao->getIncidencias($filter);
-			foreach ($incidencias as $value) {
 			
-				echo '<div class="incidencias-container">';
-					
-					echo '<div class="row row-eq-height">';
-						echo '<div class="col-md-8 info-incidencia">';
-							echo '<span class="incidencia"><strong>Incidencia #'.$value['id'].' | '.$this->getTipoIncidencia($value['idType'])[0]['name'].'</stong></span>';
-							echo '<br/>';
-							echo '<br/>';
-							echo '<span>'.$value['description'].'</span>';
-							echo '<br/>';
-							echo '<br/>';
-							echo '<span class="student-span">Alumno: '.$value['student'].'</span>';
-							echo '<br/>';
-							echo '<span class="student-span">Creador: '.$this->getCreator($value['idCreator'])[0]['name'].'</span>';
-						echo '</div>';
-						echo '<div class="col-md-4 icons-incidencia">';
-							echo '<div class="container-icons-incidencia">';
-								echo '<div class="icons-center">';
-									echo'
-										<a href="../index.php?view='.$value['id'].'">
-			        	    				<img class="svg icon-incidencia left" src="../img/eye.svg"/>
-			        	    			</a>
-									';
-									if (($this->getCreator($value['idCreator'])[0]['username'] == $_SESSION['username']) || ($_SESSION['username'] == 'root')) {
-										echo'
-										<a href="../index.php?edit='.$value['id'].'">
-			        	    				<img class="svg icon-incidencia right" src="../img/pencil.svg"/>
-			        	    			</a>
-									';
-									}
-								echo '</div>';
+			if (count($incidencias) > 0) {
+				foreach ($incidencias as $value) {
+			
+					echo '<div class="incidencias-container">';
+						
+						echo '<div class="row row-eq-height">';
+							echo '<div class="col-md-8 info-incidencia">';
+								echo '<span class="incidencia"><strong>Incidencia #'.$value['id'].' | '.$this->getTipoIncidencia($value['idType'])[0]['name'].'</stong></span>';
+								echo '<br/>';
+								echo '<br/>';
+								echo '<span>'.$value['description'].'</span>';
+								echo '<br/>';
+								echo '<br/>';
+								echo '<span class="student-span">Alumno: '.$value['student'].'</span>';
+								echo '<br/>';
+								echo '<span class="student-span">Creador: '.$this->getCreator($value['idCreator'])[0]['name'].'</span>';
 							echo '</div>';
-							$date = date_create($value['date']);
-							echo '<span class="date-incidencia">['.date_format($date, 'd-m-Y H:i').']</span>';
+							echo '<div class="col-md-4 icons-incidencia">';
+								echo '<div class="container-icons-incidencia">';
+									echo '<div class="icons-center">';
+										echo'
+				        	    			<img class="svg icon-incidencia left" src="../img/eye.svg"/>
+										';
+										if (($this->getCreator($value['idCreator'])[0]['username'] == $_SESSION['username']) || ($_SESSION['username'] == 'root')) {
+											echo'
+				        	    			<img class="svg icon-incidencia right" src="../img/pencil.svg" onclick="updateIncidencia('.$value['id'].')"/>
+										';
+										}
+									echo '</div>';
+								echo '</div>';
+								$date = date_create($value['date']);
+								echo '<span class="date-incidencia">['.date_format($date, 'd-m-Y H:i').']</span>';
+							echo '</div>';
 						echo '</div>';
+						
 					echo '</div>';
-					
-				echo '</div>';
+				}
+			} else {
+				echo '<p class="not-found">No se encontraron resultados</p>';
 			}
+			
+		}
+		
+		function getIncidencia($id) {
+			return $this->dao->getIncidencia($id);
 		}
 		
 		function getTipoIncidencia($id) {
@@ -96,31 +102,91 @@
 			}
 		}
 		
+		function addUser($username, $password, $name) {
+			$this->dao->addUser($username, $password, $name);
+		}
+		
+		function updateUser($username, $name, $password) {
+			$this->dao->updateUser($username, $name, $password);
+		}
+		
+		function removeUser($username) {
+			$this->dao->removeUser($username);
+		}
+		
 		function getUser($username) {
 			return $this->dao->getUser($username);
+		}
+		
+		function getUserById($id) {
+			return $this->dao->getUserById($id);
 		}
 		
 		function getUsers() {
 			$users = $this->dao->getUsers();
 			
 			foreach($users as $value) {
-				echo '
-				<li>
-					<div class="user-div">
-						<div class="username-manage-user">
-							<span>'.$value['username'].'</span>
+				
+				if ($value['username'] != "root") {
+					echo '
+					<li>
+						<div class="user-div">
+							<div class="username-manage-user">
+								<span>'.$value['username'].'</span>
+							</div>
+							<div class="icons-manage-user">
+								<img id="update-user" class="svg svg-manage-users" src="../img/pencil.svg" onclick="updateUser(\''.$value['username'].'\')" />
+				        	    <img id="remove-user" class="svg svg-manage-users" src="../img/close_black.svg" onclick="removeUser(\''.$value['username'].'\')" />
+							</div>
 						</div>
-						<div class="icons-manage-user">
-							<a href="../index.php?view='.$value['id'].'">
-			        	    	<img class="svg svg-manage-users" src="../img/pencil.svg"/>
-			        	    </a>
-			        	    <a href="../index.php?edit='.$value['id'].'">
-			        	    	<img class="svg svg-manage-users" src="../img/close_black.svg"/>
-			        	    </a>
-						</div>
-					</div>
-				</li>';
+					</li>';
+				}
 			}
+		}
+		
+		function getTodayIncidencias() {
+	        	$incidencias = $this->dao->getTodayIncidencias(date("Y-m-d"));
+			
+    			if (count($incidencias) > 0) {
+    				foreach ($incidencias as $value) {
+    			
+    					echo '<div class="incidencias-container">';
+    						
+    						echo '<div class="row row-eq-height">';
+    							echo '<div class="col-md-8 info-incidencia">';
+    								echo '<span class="incidencia"><strong>Incidencia #'.$value['id'].' | '.$this->getTipoIncidencia($value['idType'])[0]['name'].'</stong></span>';
+    								echo '<br/>';
+    								echo '<br/>';
+    								echo '<span>'.$value['description'].'</span>';
+    								echo '<br/>';
+    								echo '<br/>';
+    								echo '<span class="student-span">Alumno: '.$value['student'].'</span>';
+    								echo '<br/>';
+    								echo '<span class="student-span">Creador: '.$this->getCreator($value['idCreator'])[0]['name'].'</span>';
+    							echo '</div>';
+    							echo '<div class="col-md-4 icons-incidencia">';
+    								echo '<div class="container-icons-incidencia">';
+    									echo '<div class="icons-center">';
+    										echo'
+    				        	    			<img class="svg icon-incidencia left" src="../img/eye.svg"/>
+    										';
+    										if (($this->getCreator($value['idCreator'])[0]['username'] == $_SESSION['username']) || ($_SESSION['username'] == 'root')) {
+    											echo'
+    				        	    			<img class="svg icon-incidencia right" src="../img/pencil.svg" onclick="updateIncidencia('.$value['id'].')"/>
+    										';
+    										}
+    									echo '</div>';
+    								echo '</div>';
+    								$date = date_create($value['date']);
+    								echo '<span class="date-incidencia">['.date_format($date, 'd-m-Y H:i').']</span>';
+    							echo '</div>';
+    						echo '</div>';
+    						
+    					echo '</div>';
+    				}
+    			} else {
+    				echo '<p class="not-found">No se encontraron resultados</p>';
+    			}
 		}
 		
 		function getCountIncidencias() {
@@ -132,8 +198,57 @@
 			return $this->dao->getCountTodayIncidencias($today);
 		}
 		
+		function getIncidenciasBetweenDates($from, $to) {
+			
+			$incidencias = $this->dao->getIncidenciasBetweenDates($from, $to);
+			
+			if (count($incidencias)) {
+				foreach ($incidencias as $value) {
+			
+					echo '<div class="incidencias-container">';
+						
+						echo '<div class="row row-eq-height">';
+							echo '<div class="col-md-8 info-incidencia">';
+								echo '<span class="incidencia"><strong>Incidencia #'.$value['id'].' | '.$this->getTipoIncidencia($value['idType'])[0]['name'].'</stong></span>';
+								echo '<br/>';
+								echo '<br/>';
+								echo '<span>'.$value['description'].'</span>';
+								echo '<br/>';
+								echo '<br/>';
+								echo '<span class="student-span">Alumno: '.$value['student'].'</span>';
+								echo '<br/>';
+								echo '<span class="student-span">Creador: '.$this->getCreator($value['idCreator'])[0]['name'].'</span>';
+							echo '</div>';
+							echo '<div class="col-md-4 icons-incidencia">';
+								echo '<div class="container-icons-incidencia">';
+									echo '<div class="icons-center">';
+										echo'
+				        	    			<img class="svg icon-incidencia left" src="../img/eye.svg"/>
+										';
+									echo '</div>';
+								echo '</div>';
+								$date = date_create($value['date']);
+								echo '<span class="date-incidencia">['.date_format($date, 'd-m-Y H:i').']</span>';
+							echo '</div>';
+						echo '</div>';
+						
+					echo '</div>';
+				}
+			} else {
+				echo '<p class="not-found">No se encontraron resultados</p>';
+			}
+		}
+		
+		function getMinDate() {
+			return $this->dao->getMinDate()[0]['min(date)'];
+		}
+		
 		function insertIncidencia($description, $student, $tipoIncidencia, $username) {
 			$this->dao->insertIncidencia($description, $student, $tipoIncidencia, $username);
+		}
+		
+		function updateIncidencia($id, $description, $alumno, $tipoIncidencia) {
+			$this->dao->updateIncidencia($id, $description, $alumno, $tipoIncidencia);
 		}
 	}
 ?>

@@ -27,6 +27,7 @@
 	define("COL_ID_USUARIOS", "id");
 	define("COL_USERNAME_USUARIOS", "username");
 	define("COL_PASSWORD_USUARIOS", "password");
+	define("COL_NAME_USUARIOS", "name");
 
 	class Dao {
 		protected $db;
@@ -92,6 +93,36 @@
 			return $output;
 		}
 		
+		function getIncidenciasBetweenDates($from, $to) {
+			$output;
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				$sql = "SELECT * FROM ".TABLE_INCIDENCIAS." WHERE date(".COL_DATE_INCIDENCIAS.") >= '".$from."' AND date(".COL_DATE_INCIDENCIAS.") <='".$to."' ORDER BY ".COL_DATE_INCIDENCIAS.";";
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+				$output = $sth->fetchAll();
+			}
+			
+			return $output;
+		}
+		
+		function getTodayIncidencias($today) {
+			$output;
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				$sql = "SELECT * FROM ".TABLE_INCIDENCIAS." WHERE ".COL_DATE_INCIDENCIAS." LIKE '".$today."%';";
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+				$output = $sth->fetchAll();
+			}
+			
+			return $output;
+		}
+		
 		function getCountTodayIncidencias($today) {
 			$output;
 			$sql;
@@ -122,6 +153,45 @@
 			return $output[0]['count(id)'];
 		}
 		
+		function addUser($username, $password, $name) {
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				if ($username != root) {
+					$sql = "INSERT INTO ".TABLE_USUARIOS." (".COL_USERNAME_USUARIOS.",".COL_PASSWORD_USUARIOS.",".COL_NAME_USUARIOS.") VALUES('".$username."','".sha1($password)."','".$name."');";
+					$sth = $this->db->prepare($sql);
+					$sth->execute();
+				}
+			}
+		}
+		
+		function updateUser($username, $name, $password) {
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				if ($username != root) {
+					$sql = "UPDATE ".TABLE_USUARIOS." SET ".COL_PASSWORD_USUARIOS." = '".sha1($password)."', ".COL_NAME_USUARIOS." = '".$name."' WHERE ".COL_USERNAME_USUARIOS." = '".$username."';";
+					$sth = $this->db->prepare($sql);
+					$sth->execute();
+				}
+			}
+		}
+		
+		function removeUser($username) {
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				if ($username != root) {
+					$sql = "DELETE FROM ".TABLE_USUARIOS." WHERE ".COL_USERNAME_USUARIOS." = '".$username."';";
+					$sth = $this->db->prepare($sql);
+					$sth->execute();
+				}
+			}
+		}
+		
 		function getUser($username) {
 			$output;
 			$sql;
@@ -129,6 +199,20 @@
 			if ($this->isConnected()) {
 				
 				$sql = "SELECT * FROM ".TABLE_USUARIOS." WHERE ".COL_USERNAME_USUARIOS." = '".$username."';";
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+				$output = $sth->fetchAll();
+			}
+			return $output;
+		}
+		
+		function getUserById($id) {
+			$output;
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				$sql = "SELECT * FROM ".TABLE_USUARIOS." WHERE ".COL_ID_USUARIOS." = ".$id.";";
 				$sth = $this->db->prepare($sql);
 				$sth->execute();
 				$output = $sth->fetchAll();
@@ -161,6 +245,33 @@
 			}
 		}
 		
+		function updateIncidencia($id, $description, $student, $tipoIncidencia) {
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				if ($this->isConnected()) {
+					$sql = "UPDATE ".TABLE_INCIDENCIAS." SET ".COL_DESCRIPTION_INCIDENCIAS." = '".$description."', ".COL_STUDENT_INCIDENCIAS." = '".$student."', ".COL_IDTYPE_INCIDENCIAS." = ".$tipoIncidencia." WHERE ".COL_ID_INCIDENCIAS." = ".$id.";";
+					$sth = $this->db->prepare($sql);
+					$sth->execute();
+				}
+			}
+		}
+		
+		function getIncidencia($id) {
+			$output;
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				$sql = "SELECT * FROM ".TABLE_INCIDENCIAS." WHERE ".COL_ID_INCIDENCIAS." = ".$id.";";
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+				$output = $sth->fetchAll();
+			}
+			return $output;
+		}
+		
 		function getTipoIncidencia($id) {
 			$output;
 			$sql;
@@ -182,6 +293,20 @@
 			if ($this->isConnected()) {
 				
 				$sql = "SELECT * FROM ".TABLE_USUARIOS." WHERE ".COL_ID_USUARIOS." = ".$id.";";
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+				$output = $sth->fetchAll();
+			}
+			return $output;
+		}
+		
+		function getMinDate() {
+			$output;
+			$sql;
+			
+			if ($this->isConnected()) {
+				
+				$sql = "SELECT min(".COL_DATE_INCIDENCIAS.") FROM ".TABLE_INCIDENCIAS.";";
 				$sth = $this->db->prepare($sql);
 				$sth->execute();
 				$output = $sth->fetchAll();

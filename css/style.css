@@ -13,8 +13,14 @@ body {
   overflow-x: hidden;
 }
 
+a {
+  color: white;
+}
+
 a:hover {
+  color: white;
   text-decoration: none;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
 }
 
 li {
@@ -161,6 +167,10 @@ select option[disabled]:first-child {
   font-size: 18px;
   -webkit-transition-duration: 0.25s;
           transition-duration: 0.25s;
+}
+
+.btn-red {
+  color: #FF5252;
 }
 
 .button-send-login {
@@ -314,28 +324,40 @@ select option[disabled]:first-child {
   text-align: center;
 }
 
-.add-modal {
-  display: none;
-  visibility: hidden;
+.window-modal  {
   width: 450px;
   padding: 20px 30px; 
   height: auto;
   text-align: left;
   background: #50a3a2;
+  border-radius: 3px;
   background: -webkit-linear-gradient(top left, #50a3a2 0%, #50a3a2 20%, #53e3a6 100%);
   background: linear-gradient(to bottom right, #50a3a2 0%, #50a3a2 20%, #51C798 100%);
+}
+
+.add-modal {
+  display: none;
+  visibility: hidden;
 }
 
 .manage-users-modal {
   display: none;
   visibility: hidden;
-  width: 450px;
-  padding: 20px 30px; 
-  height: auto;
-  text-align: left;
-  background: #50a3a2;
-  background: -webkit-linear-gradient(top left, #50a3a2 0%, #50a3a2 20%, #53e3a6 100%);
-  background: linear-gradient(to bottom right, #50a3a2 0%, #50a3a2 20%, #51C798 100%);
+}
+
+.edit-incidencia-modal {
+  display: none;
+  visibility: hidden;
+}
+
+.add-user-modal {
+  display: none;
+  visibility: hidden;
+}
+
+.update-user-modal {
+  display: none;
+  visibility: hidden;
 }
 
 .close-modal {
@@ -356,6 +378,22 @@ select option[disabled]:first-child {
   background-color: rgba(255,82,82,0.8);
   color: #FFF;
   border-radius: 6px;
+}
+
+.not-found {
+  display: block;
+  margin: 5% auto;
+  width: 23%;
+}
+
+.form-date {
+  
+}
+
+.input-date {
+  display: inline-block;
+  color: #000;
+  width: 25%;
 }
 
 
