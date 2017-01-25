@@ -15,50 +15,58 @@ if (isset($_GET['disconnect'])) {
 }
 
 if (isset($_GET['addIncidencia'])) {
-    unset($_GET['addIncidencia']);
-    $username = $_SESSION['username'];
-    $description = $_POST['add-description'];
-    $student =  $_POST['add-student'];
-    $tipoIncidencia =  $_POST['add-tipo-incidencia'];
-    $userId = $app->getUser($username)[0]['id'];
-
-    $app->insertIncidencia($description, $student, $tipoIncidencia, $userId);
-    echo "<script>window.location='index.php';</script>";
+    if($app->loginIsSet()) {
+        unset($_GET['addIncidencia']);
+        $username = $_SESSION['username'];
+        $description = $_POST['add-description'];
+        $student =  $_POST['add-student'];
+        $tipoIncidencia =  $_POST['add-tipo-incidencia'];
+        $userId = $app->getUser($username)[0]['id'];
+    
+        $app->insertIncidencia($description, $student, $tipoIncidencia, $userId);
+        echo "<script>window.location='index.php';</script>";
+    }
 }
 
 if (isset($_GET['removeUser'])) {
-    if ($_SESSION['username'] == "root") {
-        $app->removeUser($_GET['removeUser']);
-        unset($_GET['removeUser']);
+    if($app->loginIsSet()) {
+        if ($_SESSION['username'] == "root") {
+            $app->removeUser($_GET['removeUser']);
+            unset($_GET['removeUser']);
+        }
+        echo "<script>window.location='index.php';</script>";
     }
-    echo "<script>window.location='index.php';</script>";
 }
 
 if (isset($_GET['addUser'])) {
-    
-    if ($_SESSION['username'] == "root") {
-        $app->addUser($_POST['new-username'], $_POST['new-password'], $_POST['new-name']);
-        unset($_GET['addUser']);
+    if($app->loginIsSet()) {
+        if ($_SESSION['username'] == "root") {
+            $app->addUser($_POST['new-username'], $_POST['new-password'], $_POST['new-name']);
+            unset($_GET['addUser']);
+        }
+        echo "<script>window.location='index.php';</script>";
     }
-    echo "<script>window.location='index.php';</script>";
 }
 
 if (isset($_GET['updateUser'])) {
-    if ($_SESSION['username'] == "root") {
-        $app->updateUser($_GET['updateUser'], $_POST['update-name'], $_POST['update-password']);
-        unset($_GET['updateUser']);
+    if($app->loginIsSet()) {
+        if ($_SESSION['username'] == "root") {
+            $app->updateUser($_GET['updateUser'], $_POST['update-name'], $_POST['update-password']);
+            unset($_GET['updateUser']);
+        }
+        echo "<script>window.location='index.php';</script>";
     }
-    echo "<script>window.location='index.php';</script>";
 }
 
 if (isset($_GET['editIncidencia'])) {
-    
-    $usernameRequest = $app->getUserById($app->getIncidencia($_GET['editIncidencia'])[0]['idCreator'])[0]['username'];
-    
-    if (($_SESSION['username'] == "root") || ($_SESSION['username'] == $usernameRequest)) {
-        $app->updateIncidencia($_GET['editIncidencia'], $_POST['edit-description'], $_POST['edit-student'], $_POST['edit-tipo-incidencia']);
+    if($app->loginIsSet()) {
+        $usernameRequest = $app->getUserById($app->getIncidencia($_GET['editIncidencia'])[0]['idCreator'])[0]['username'];
+        
+        if (($_SESSION['username'] == "root") || ($_SESSION['username'] == $usernameRequest)) {
+            $app->updateIncidencia($_GET['editIncidencia'], $_POST['edit-description'], $_POST['edit-student'], $_POST['edit-tipo-incidencia']);
+        }
+        echo "<script>window.location='index.php';</script>";
     }
-    echo "<script>window.location='index.php';</script>";
 }
 
 if($app->loginIsSet()) {
@@ -396,6 +404,7 @@ if($app->loginIsSet()) {
         			    
         			        updateUserModal.style.visibility = "hidden";
         			        updateUserModal.style.display = "none";
+        			        
         			        manageUsersModal.style.visibility = "visible";
         			        manageUsersModal.style.display = "inline-block";
         			        
@@ -422,10 +431,11 @@ if($app->loginIsSet()) {
         				    var addUserModal = document.querySelector(".add-user-modal");
         			        var manageUsersModal = document.querySelector(".manage-users-modal");
         			    
-        			        updateUserModal.style.visibility = "hidden";
-        			        updateUserModal.style.display = "none";
-        			        addUserModal.style.visibility = "visible";
-        			        addUserModal.style.display = "inline-block";
+        			        addUserModal.style.visibility = "hidden";
+        			        addUserModal.style.display = "none";
+        			        
+        			        manageUsersModal.style.visibility = "visible";
+        			        manageUsersModal.style.display = "inline-block";
         			        
         				}).call(document.getElementById("close-add-user"),event);	
         			});

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.17, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.53, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: incidencias_app
+-- Host: 0.0.0.0    Database: incidencias_app
 -- ------------------------------------------------------
--- Server version	5.7.17-0ubuntu0.16.04.1
+-- Server version	5.5.53-0ubuntu0.14.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -32,9 +32,9 @@ CREATE TABLE `incidencias` (
   PRIMARY KEY (`id`),
   KEY `fk_idTipo` (`idType`),
   KEY `fk_idCreador` (`idCreator`),
-  CONSTRAINT `fk_idCreador` FOREIGN KEY (`idCreator`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_idTipo` FOREIGN KEY (`idType`) REFERENCES `tipoIncidencias` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_idTipo` FOREIGN KEY (`idType`) REFERENCES `tipoIncidencias` (`id`),
+  CONSTRAINT `fk_UsuariosIncidencias` FOREIGN KEY (`idCreator`) REFERENCES `usuarios` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,6 +43,7 @@ CREATE TABLE `incidencias` (
 
 LOCK TABLES `incidencias` WRITE;
 /*!40000 ALTER TABLE `incidencias` DISABLE KEYS */;
+INSERT INTO `incidencias` VALUES (19,'Le apaga el ordenador a Enrique Casielles','Jaime','2017-01-25 16:38:45',2,4),(20,'Falta a DEINT','David Primenko','2017-01-25 16:41:20',3,7),(21,'No sincroniza los metodos de la seccion critica','David Primenko','2017-01-25 16:43:51',2,11),(23,'No entrega la tarea 7: Interfaz avanzada','Andres Espino','2017-01-15 00:00:00',4,7),(24,'Saca un 10 en Unity','Daniel Acedo','2017-01-18 00:00:00',2,9),(26,'No calcula el escrutinio de la quiniela','Amador Fernandez','2017-01-26 00:00:00',4,12),(27,'No usa volley para cargar los links de las imagenes del servidor','Joselu Gallardo','2017-01-26 00:00:00',2,12),(28,'Sigue sin ir al dia con ManagerProducts','David Primenko','2017-01-21 00:00:00',4,7),(29,'Me dice que mis enunciados no hay por donde cogerlos, no lo entiendo...','Amador Fernandez','2017-01-17 00:00:00',2,12),(30,'Se retrasa a clase y encima no me invita al cafe que llevaba con el','David Primenko','2017-01-20 00:00:00',2,7);
 /*!40000 ALTER TABLE `incidencias` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -58,7 +59,7 @@ CREATE TABLE `tipoIncidencias` (
   `name` varchar(255) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,6 +68,7 @@ CREATE TABLE `tipoIncidencias` (
 
 LOCK TABLES `tipoIncidencias` WRITE;
 /*!40000 ALTER TABLE `tipoIncidencias` DISABLE KEYS */;
+INSERT INTO `tipoIncidencias` VALUES (1,'Retraso','El alumno llegó tarde a la lección.'),(2,'Falta respeto','Falta al respeto de algún alumno o profesor'),(3,'Falta a clase','Falta a alguna lección'),(4,'Ejercicios no entregados','No presenta la tarea que se le manda');
 /*!40000 ALTER TABLE `tipoIncidencias` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -81,8 +83,9 @@ CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(150) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
+  `name` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -91,7 +94,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'dprimenko','3245bb1674ba13c1a8874988da9fc201673bdedf'),(2,'moronlu','15e28283a18c27e48625f9dcedafd207bc8d3034'),(3,'emoreno','ebec420aa058c3d5fb7ba835a619d3b936c5ae89'),(4,'root','16ff504b76e7521ce35600a80e14680a611b97b5');
+INSERT INTO `usuarios` VALUES (4,'root','16ff504b76e7521ce35600a80e14680a611b97b5','Superuser'),(7,'moronlu','15e28283a18c27e48625f9dcedafd207bc8d3034','Lourdes Rodriguez'),(9,'smillan','a7ccd6ab343741b327dafef52a9fefd00d2731b7','Sebastian Millan'),(11,'emoreno','ebec420aa058c3d5fb7ba835a619d3b936c5ae89','Eliseo Moreno'),(12,'pacog','48aad8b30efa19a774405d456395b1779f450257','Paquillo');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -104,4 +107,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-01-20 23:50:31
+-- Dump completed on 2017-01-25 17:08:18
