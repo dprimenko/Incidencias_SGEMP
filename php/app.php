@@ -52,9 +52,6 @@
 							echo '<div class="col-md-4 icons-incidencia">';
 								echo '<div class="container-icons-incidencia">';
 									echo '<div class="icons-center">';
-										echo'
-				        	    			<img class="svg icon-incidencia left" src="../img/eye.svg"/>
-										';
 										if (($this->getCreator($value['idCreator'])[0]['username'] == $_SESSION['username']) || ($_SESSION['username'] == 'root')) {
 											echo'
 				        	    			<img class="svg icon-incidencia right" src="../img/pencil.svg" onclick="updateIncidencia('.$value['id'].')"/>
@@ -167,9 +164,6 @@
     							echo '<div class="col-md-4 icons-incidencia">';
     								echo '<div class="container-icons-incidencia">';
     									echo '<div class="icons-center">';
-    										echo'
-    				        	    			<img class="svg icon-incidencia left" src="../img/eye.svg"/>
-    										';
     										if (($this->getCreator($value['idCreator'])[0]['username'] == $_SESSION['username']) || ($_SESSION['username'] == 'root')) {
     											echo'
     				        	    			<img class="svg icon-incidencia right" src="../img/pencil.svg" onclick="updateIncidencia('.$value['id'].')"/>
@@ -220,13 +214,6 @@
 								echo '<span class="student-span">Creador: '.$this->getCreator($value['idCreator'])[0]['name'].'</span>';
 							echo '</div>';
 							echo '<div class="col-md-4 icons-incidencia">';
-								echo '<div class="container-icons-incidencia">';
-									echo '<div class="icons-center">';
-										echo'
-				        	    			<img class="svg icon-incidencia left" src="../img/eye.svg"/>
-										';
-									echo '</div>';
-								echo '</div>';
 								$date = date_create($value['date']);
 								echo '<span class="date-incidencia">['.date_format($date, 'd-m-Y H:i').']</span>';
 							echo '</div>';
